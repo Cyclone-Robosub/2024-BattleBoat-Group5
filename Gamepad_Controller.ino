@@ -10,13 +10,13 @@
 #define INCLUDE_GAMEPAD_MODULE
 #include <Dabble.h>
 
-const int rightIn1 = 4;
-const int rightIn2 = 5;
-const int rightPwm = 9;
+const int rightIn1 = 6;
+const int rightIn2 = 7;
+const int rightPwm = 10;
 
-const int leftIn1 = 6;
-const int leftIn2 = 7;
-const int leftPwm = 10;
+const int leftIn1 = 4;
+const int leftIn2 = 5;
+const int leftPwm = 9;
 
 
 enum Direction {FORWARDS, BACKWARDS};
@@ -34,8 +34,8 @@ void setup() {
   digitalWrite(rightIn1, HIGH);
   digitalWrite(rightIn2, LOW);
 
-  digitalWrite(leftIn1, HIGH);
-  digitalWrite(leftIn2, LOW);
+  digitalWrite(leftIn1, LOW);
+  digitalWrite(leftIn2, HIGH);
 
   analogWrite(rightPwm, 0);
   analogWrite(leftPwm, 0);
@@ -45,14 +45,18 @@ void setup() {
 }
 
 void setLeftMotorPower(int pwm, Direction direction) {
+  Serial.print("left: ");
+  Serial.print(pwm);
+  Serial.print('\t');
+
   switch (direction) {
     case FORWARDS:
-      digitalWrite(rightIn1, HIGH);
-      digitalWrite(rightIn2, LOW);
-      break;
-    case BACKWARDS:
       digitalWrite(rightIn1, LOW);
       digitalWrite(rightIn2, HIGH);
+      break;
+    case BACKWARDS:
+      digitalWrite(rightIn1, HIGH);
+      digitalWrite(rightIn2, LOW);
       break;
     default:
       Serial.print("Error: Impossible direction!\n");
@@ -61,6 +65,10 @@ void setLeftMotorPower(int pwm, Direction direction) {
 }
 
 void setRightMotorPower(int pwm, Direction direction) {
+  Serial.print("right: ");
+  Serial.print(pwm);
+  Serial.print('\n');
+
   switch (direction) {
     case FORWARDS:
       digitalWrite(leftIn1, HIGH);
@@ -82,42 +90,18 @@ void loop() {
   static int rightMotorPwm = 0; 
   static Direction leftMotorDirection = FORWARDS;
   static Direction rightMotorDirection = FORWARDS;
-  Serial.print("KeyPressed: ");
 
-  if (GamePad.isSquarePressed())
-  {
-    Serial.print("X");
-  }
+  float y = (GamePad.getYaxisData()/6) * 255;
 
-  if (GamePad.isCirclePressed())
-  {
-    Serial.print("B");
-  }
+  float x = (GamePad.getXaxisData()/6) * 255;
 
-  if (GamePad.isCrossPressed())
-  {
-    Serial.print("A");
-  }
+  // Serial.print("x_axis: ");
+  // Serial.print(x);
+  // Serial.print('\t');
 
-  if (GamePad.isTrianglePressed())
-  {
-    Serial.print("Y");
-  }
-
-  if (GamePad.isStartPressed())
-  {
-    Serial.print("Start");
-  }
-
-  if (GamePad.isSelectPressed())
-  {
-    Serial.print("Select");
-  }
-  Serial.print('\t');
-
-  float y = GamePad.getYaxisData() * 255;
-
-  float x = GamePad.getXaxisData() * 255;
+  // Serial.print("y_axis: ");
+  // Serial.println(y);
+  // Serial.println();
 
   leftMotorPwm = (int)(y + x);
   rightMotorPwm = (int)(y - x);
@@ -149,11 +133,4 @@ void loop() {
   setRightMotorPower(rightMotorPwm, rightMotorDirection);
 
 
-  // Serial.print("x_axis: ");
-  // Serial.print(c);
-  // Serial.print('\t');
-
-  // Serial.print("y_axis: ");
-  // Serial.println(d);
-  // Serial.println();
 }
