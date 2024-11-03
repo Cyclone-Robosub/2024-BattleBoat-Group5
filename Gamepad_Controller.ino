@@ -95,6 +95,20 @@ void loop() {
 
   float x = (GamePad.getXaxisData()/6) * 255;
 
+  if (x > 255) {
+    x = 255;
+  }
+  if (x < -255) {
+    x = -255;
+  }
+  if (y > 255) {
+    y = 255;
+  }
+  if (y < -255) {
+    y = -255;
+  }
+
+
   // Serial.print("x_axis: ");
   // Serial.print(x);
   // Serial.print('\t');
